@@ -8,9 +8,10 @@ import (
 
 func main() {
 	e := echo.New()
-	var r ITodoRepository = &InMemoryTodoRepository{[]Todo{}}
-	e.GET("/todo", getTodoHandler(r))
-	e.POST("/todo", createTodoHandler(r))
+	var inMemoryTodoRepository ITodoRepository = &InMemoryTodoRepository{[]Todo{}}
+	var todoCreateInteractor TodoCreateUsecase = &TodoCreateInteractor{inMemoryTodoRepository}
+	e.GET("/todo", getTodoHandler(inMemoryTodoRepository))
+	e.POST("/todo", createTodoHandler(inMemoryTodoRepository, todoCreateInteractor))
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -22,10 +23,12 @@ func getTodoHandler(r ITodoRepository) echo.HandlerFunc {
 	}
 }
 
-func createTodoHandler(r ITodoRepository) echo.HandlerFunc {
+func createTodoHandler(r ITodoRepository, i TodoCreateUsecase) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		todo, _ := NewTodo("hoge", false)
-		r.createTodo(todo)
+		todo, err := i.call("hoge")
+		if err != nil {
+			c.String(http.StatusBadRequest, "Invalid Parameters")
+		}
 		return c.String(http.StatusOK, TodoPresenter{}.TodoPresent(*todo))
 	}
 }
