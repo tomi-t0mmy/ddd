@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -23,9 +24,20 @@ func getTodoHandler(r ITodoRepository) echo.HandlerFunc {
 	}
 }
 
+type CreateTodoParam struct {
+	Todo string `json:"todo"`
+}
+
 func createTodoHandler(r ITodoRepository, i TodoCreateUsecase) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		todo, err := i.call("hoge")
+		p := new(CreateTodoParam)
+
+		if err := c.Bind(p); err != nil {
+			fmt.Printf("err %v", err.Error())
+			return c.String(http.StatusInternalServerError, "Error!")
+		}
+
+		todo, err := i.call(p.Todo)
 		if err != nil {
 			c.String(http.StatusBadRequest, "Invalid Parameters")
 		}
