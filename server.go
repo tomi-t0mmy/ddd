@@ -9,7 +9,7 @@ import (
 
 func main() {
 	e := echo.New()
-	var inMemoryTodoRepository ITodoRepository = &InMemoryTodoRepository{[]Todo{}}
+	var inMemoryTodoRepository ITodoRepository = &InMemoryTodoRepository{0, []Todo{}}
 	var todoCreateInteractor TodoCreateUsecase = &TodoCreateInteractor{inMemoryTodoRepository}
 	e.GET("/todo", getTodoHandler(inMemoryTodoRepository))
 	e.POST("/todo", createTodoHandler(inMemoryTodoRepository, todoCreateInteractor))
