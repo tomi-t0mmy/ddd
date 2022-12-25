@@ -16,8 +16,8 @@ func main() {
 	var todoToggleInteractor TodoToggleUsecase = &TodoToggleInteractor{inMemoryTodoRepository}
 	var todoDeleteInteractor TodoDeleteUsecase = &TodoDeleteInteractor{inMemoryTodoRepository}
 	e.GET("/todo", getTodoHandler(inMemoryTodoRepository))
-	e.GET("/todo/:id", toggleDoneHandler(inMemoryTodoRepository, todoToggleInteractor))
-	e.POST("/todo", createTodoHandler(inMemoryTodoRepository, todoCreateInteractor))
+	e.GET("/todo/:id", toggleDoneHandler(todoToggleInteractor))
+	e.POST("/todo", createTodoHandler(todoCreateInteractor))
 	e.DELETE("/todo/:id", deleteTodoHandler(todoDeleteInteractor))
 
 	e.Logger.Fatal(e.Start(":1323"))
@@ -34,7 +34,7 @@ type CreateTodoParam struct {
 	Todo string `json:"todo"`
 }
 
-func createTodoHandler(r ITodoRepository, i TodoCreateUsecase) echo.HandlerFunc {
+func createTodoHandler(i TodoCreateUsecase) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		p := new(CreateTodoParam)
 
@@ -51,14 +51,14 @@ func createTodoHandler(r ITodoRepository, i TodoCreateUsecase) echo.HandlerFunc 
 	}
 }
 
-func toggleDoneHandler(r ITodoRepository, i TodoToggleUsecase) echo.HandlerFunc {
+func toggleDoneHandler(i TodoToggleUsecase) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(strings.TrimRight(c.Param("id"), "\n"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Parameters")
 		}
 
-		todo, err := r.toggleDone(id)
+		todo, err := i.call(id)
 		if err != nil {
 			return c.String(http.StatusBadRequest, "The Todo doesn't exist")
 		}
