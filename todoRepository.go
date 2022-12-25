@@ -27,3 +27,14 @@ func (r *InMemoryTodoRepository) toggleDone(id int) (*Todo, error) {
 	}
 	return nil, errors.New("error : The Todo doesn't exist")
 }
+
+func (r *InMemoryTodoRepository) deleteTodo(id int) (*Todo, error) {
+
+	for i, todo := range r.todos {
+		if todo.Id == id {
+			r.todos = r.todos[:i+copy(r.todos[i:], r.todos[i+1:])]
+			return &todo, nil
+		}
+	}
+	return nil, errors.New("error : The Todo doesn't exist")
+}
