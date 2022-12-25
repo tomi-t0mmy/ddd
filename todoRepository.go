@@ -17,9 +17,11 @@ func (r *InMemoryTodoRepository) createTodo(t *Todo) {
 	r.todos = append(r.todos, *t)
 }
 
-func (r *InMemoryTodoRepository) searchTodo(id int) (*Todo, error) {
-	for _, todo := range r.todos {
+func (r *InMemoryTodoRepository) toggleDone(id int) (*Todo, error) {
+	for i, todo := range r.todos {
 		if todo.Id == id {
+			todo.Is_done = !todo.Is_done
+			r.todos[i] = todo
 			return &todo, nil
 		}
 	}
