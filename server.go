@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 	var todoCreateInteractor TodoCreateUsecase = &TodoCreateInteractor{inMemoryTodoRepository}
 	var todoToggleInteractor TodoToggleUsecase = &TodoToggleInteractor{inMemoryTodoRepository}
 	var todoDeleteInteractor TodoDeleteUsecase = &TodoDeleteInteractor{inMemoryTodoRepository}
+	e.Use(middleware.CORS())
 	e.GET("/todo", getTodoHandler(inMemoryTodoRepository))
 	e.GET("/todo/:id", toggleDoneHandler(todoToggleInteractor))
 	e.POST("/todo", createTodoHandler(todoCreateInteractor))
