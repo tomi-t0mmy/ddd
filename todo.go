@@ -5,7 +5,7 @@ import "errors"
 type Todo struct {
 	Id       int
 	TodoText string
-	Is_done  bool
+	IsDone   bool
 }
 
 func NewTodo(t string, d bool) (*Todo, error) {
@@ -16,7 +16,7 @@ func NewTodo(t string, d bool) (*Todo, error) {
 	todo := &Todo{
 		Id:       -1, // repositoryで設定するため、一旦-1を入れておく
 		TodoText: t,
-		Is_done:  false,
+		IsDone:   false,
 	}
 
 	return todo, nil

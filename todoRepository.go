@@ -20,7 +20,7 @@ func (r *InMemoryTodoRepository) createTodo(t *Todo) {
 func (r *InMemoryTodoRepository) toggleDone(id int) (*Todo, error) {
 	for i, todo := range r.todos {
 		if todo.Id == id {
-			todo.Is_done = !todo.Is_done
+			todo.IsDone = !todo.IsDone
 			r.todos[i] = todo
 			return &todo, nil
 		}
